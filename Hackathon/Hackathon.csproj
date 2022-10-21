@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Siemens.Simatic.Simulation.Runtime.Api.x86">
+      <HintPath>..\..\.dll\Siemens.Simatic.Simulation.Runtime.Api.x86.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
