@@ -13,10 +13,15 @@ namespace Hackathon
 
         static void Main(string[] args)
         {
-            instance = SimulationRuntimeManager.CreateInterface("002"); //hooks into existing VirtualPLC, works
+            instance = SimulationRuntimeManager.CreateInterface("001"); //hooks into existing VirtualPLC, works
 
+          
             instance.CommunicationInterface = ECommunicationInterface.TCPIP;
             instance.IsSendSyncEventInDefaultModeEnabled = true;
+
+            instance.UpdateTagList();
+            Console.WriteLine(instance.Read("QX_VGR_ValveVacuum_Q8"));
+            Console.ReadKey();
 
         }
     }
