@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Siemens.Simatic.Simulation.Runtime;
 using Hackathon.Interfaces;
+using System.Threading;
 
 namespace Hackathon
 {
@@ -119,8 +120,24 @@ namespace Hackathon
             Caller.SetVariable("IX_SLD_LightBarrierInlet_I2", true);
             Caller.SetVariable("QW_VGR_PWM_Vertical_M1", 800);
             Caller.SetVariable("IX_SSC_LightBarrierStorage_I3", true);
+           
+            Caller.RunToNextSyncPoint();
+
+            Caller.SetVariable("IX_SSC_LightBarrierStorage_I3", false);
 
             Caller.RunToNextSyncPoint();
+
+            for(int i = 0; i < 50; i++) {
+                Console.WriteLine("QX_VGR_M3_RotateCounterclockwise_Q6: " + Caller.CheckVariable("QX_VGR_M3_RotateCounterclockwise_Q6", true));
+                Console.WriteLine("QX_VGR_M3_RotateClockwise_Q5: " + Caller.CheckVariable("QX_VGR_M3_RotateClockwise_Q5", true));
+                Console.WriteLine("QX_VGR_M1_VerticalAxisDown_Q2: " + Caller.CheckVariable("QX_VGR_M1_VerticalAxisDown_Q2", true));
+
+                Console.WriteLine("QX_HBW_M3_VerticalAxisDownward_Q5: " + Caller.CheckVariable("QX_HBW_M3_VerticalAxisDownward_Q5", true));
+                Thread.Sleep(1000);
+                Caller.RunToNextSyncPoint();
+            }
+           
+
 
             /*
             Caller.SetVariable("IX_SSC_LightBarrierStorage_I3", false);

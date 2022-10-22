@@ -31,7 +31,6 @@ namespace Hackathon
                 Instance.OnOperatingStateChanged += OnOperatingStateChanged;
 
                 //Instance.Run();
-                Console.WriteLine("PLCInstance created.");
             }catch(SimulationRuntimeException ex)
             {
                 Console.WriteLine("Failed registering PLCInstance: " + ex.Message);
@@ -49,14 +48,13 @@ namespace Hackathon
              
         void OnOperatingStateChanged(IInstance in_Sender, ERuntimeErrorCode in_ErrorCode, DateTime in_DateTime, EOperatingState in_PrevState, EOperatingState in_OperatingState)
         {
-            Console.WriteLine($"Operating Mode changed to {in_OperatingState}");
             if(in_OperatingState == EOperatingState.Run)
             {
+                Console.WriteLine("RUN MODE");
                 try
                 {
                     Instance.UpdateTagList();
                     IsConfigured = true;
-                    Console.WriteLine("Simulation is configured");
                 }
                 catch (Exception ex)
                 {
@@ -65,11 +63,12 @@ namespace Hackathon
             }
             if(in_OperatingState == EOperatingState.Freeze)
             {
-                Console.WriteLine("Freeze Mode entered");
+                Console.WriteLine("FREEZE MODE");
                 //RunToNextSyncPoint();
             }
             if (in_OperatingState == EOperatingState.Stop)
             {
+                Console.WriteLine("STOP MODE");
                 try
                 {
                     Instance.Run();
