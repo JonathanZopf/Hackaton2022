@@ -12,12 +12,10 @@ namespace Hackathon
     {
 
         private ApiCallerState State = ApiCallerState.TestRunning;
+        private long TimeSinceSameSyncPoint = 0;
         private int NeutralStateTime = 0;
         private int NeutralStateCycles = 0;
         private PLCInstance PLCInstance;
-        private IDictionary<string, SDataValue> VariablesSet = new Dictionary<string, SDataValue>();
-        private IDictionary<string, (SDataValue value, int time)> WatchListTime = new Dictionary<string, (SDataValue value, int time)>();
-        private IDictionary<string, (SDataValue value, int cycles)> WatchListCycle = new Dictionary<string, (SDataValue value, int cycles)>();
 
         public ApiCaller()
         {
@@ -42,46 +40,64 @@ namespace Hackathon
 
         public bool CheckVariableTimeDependent(string name, bool value, int time)
         {
-            return true;
+            if (time < 0)
+                return CheckVariable(name, value);
+            if (!CheckVariable(name, value))
+                return false;
+            RunToNextSyncPoint();
+            int TimeSinceSameSyncPoint_ms = (int) TimeSinceSameSyncPoint / 1000000;
+            return CheckVariableTimeDependent(name, value, time - TimeSinceSameSyncPoint_ms);
         }
 
         public bool CheckVariableTimeDependent(string name, int value, int time)
         {
-            return true;
+            if(time < 0)
+                return CheckVariable(name, value);
+            if (!CheckVariable(name, value))
+                return false;
+            RunToNextSyncPoint();
+            int TimeSinceSameSyncPoint_ms = (int)TimeSinceSameSyncPoint / 1000000;
+            return CheckVariableTimeDependent(name, value, time - TimeSinceSameSyncPoint_ms);
         }
 
         public bool CheckVariableCycleDependent(string name, bool value, int cycles)
         {
-            for(int i = 0; i < cycles; i++)
-            {
-                if (!CheckVariable(name, value)) 
-                    return false;
-                RunToNextSyncPoint();
-            }
-            return true;
+            if (cycles < 0)
+                return CheckVariable(name, value);
+            if (!CheckVariable(name, value))
+                return false;
+            RunToNextSyncPoint();
+            return CheckVariableCycleDependent(name, value, cycles - 1);
         }
 
         public bool CheckVariableCycleDependent(string name, int value, int cycles)
         {
-            for (int i = 0; i < cycles; i++)
-            {
-                if (!CheckVariable(name, value)) 
-                    return false;
-                RunToNextSyncPoint();
-            }
-            return true;
+            if (cycles < 0)
+                return CheckVariable(name, value);
+            if (!CheckVariable(name, value))
+                return false;
+            RunToNextSyncPoint();
+            return CheckVariableCycleDependent(name, value, cycles - 1);
         }
         public void SetVariable(string name, bool value)
         {
             SDataValue sValue = new SDataValue(){ Type = EPrimitiveDataType.Bool, Bool = value };
-            VariablesSet.Add(name, sValue);
             PLCInstance.InstanceWrite(name, sValue);
         }
 
         public void SetVariable(string name, int value)
         {
-            SDataValue sValue = new SDataValue() { Type = EPrimitiveDataType.Int16, Int16 = (short) value };
-            VariablesSet.Add(name, sValue);
+            EPrimitiveDataType Type = GetEPrimitiveDataType(name);
+            SDataValue sValue = new SDataValue();
+            switch (Type)
+            {
+                case EPrimitiveDataType.Int16:
+                    sValue = new SDataValue() { Type = Type, Int16 = (short) value };
+                    break;
+                case EPrimitiveDataType.UInt16:
+                    sValue = new SDataValue() { Type = Type, UInt16 = (ushort) value };
+                    break;
+            }
             PLCInstance.InstanceWrite(name, sValue);
         }
 
@@ -105,6 +121,7 @@ namespace Hackathon
         }
         public void OnEndOfCycle(IInstance in_Sender, ERuntimeErrorCode in_ErrorCode, DateTime in_DateTime, UInt32 in_PipId, Int64 in_TimeSinceSameSyncPoint_ns, Int64 in_TimeSinceAnySyncPoint_ns, UInt32 in_SyncPointCount)
         {
+            TimeSinceSameSyncPoint = in_TimeSinceSameSyncPoint_ns;
             switch (this.State)
             {
                 case ApiCallerState.NeutralTime:
@@ -125,8 +142,21 @@ namespace Hackathon
                     else
                         State = ApiCallerState.TestRunning;
                     break;
+                case ApiCallerState.TestRunning:
+                    // Do Nothing
+                    break;
             }
          }
+
+        private EPrimitiveDataType GetEPrimitiveDataType(string name)
+        {
+            foreach(var variable in PLCInstance.TagInfos())
+            {
+                if (variable.Name.Equals(name))
+                    return variable.PrimitiveDataType;
+            }
+            return EPrimitiveDataType.Unspecific;
+        }
     }
 
     enum ApiCallerState
@@ -135,4 +165,5 @@ namespace Hackathon
         NeutralTime = 1,
         NeutralCycles = 2,
     }
+
 }

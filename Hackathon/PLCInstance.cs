@@ -30,8 +30,7 @@ namespace Hackathon
                 Instance.OnSyncPointReached += OnEndOfCycle;
                 Instance.OnOperatingStateChanged += OnOperatingStateChanged;
 
-                Instance.PowerOn();
-                Instance.Run();
+                //Instance.Run();
                 Console.WriteLine("PLCInstance created.");
             }catch(SimulationRuntimeException ex)
             {
@@ -67,13 +66,25 @@ namespace Hackathon
             if(in_OperatingState == EOperatingState.Freeze)
             {
                 Console.WriteLine("Freeze Mode entered");
-                RunToNextSyncPoint();
+                //RunToNextSyncPoint();
+            }
+            if (in_OperatingState == EOperatingState.Stop)
+            {
+                try
+                {
+                    Instance.Run();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error when updating TagList:", ex.Message);
+                }
             }
         }
 
         public void RunToNextSyncPoint()
         {
             Instance.RunToNextSyncPoint();
+            //Instance.UpdateTagList();
         }
 
         public void PowerOn()
@@ -98,13 +109,31 @@ namespace Hackathon
 
         public void InstanceWrite(string name, SDataValue value)
         {
-            Instance.Write(name, value);
+            Instance.UpdateTagList();
+            switch (value.Type)
+            {
+                case EPrimitiveDataType.Bool:
+                    Instance.WriteBool(name, value.Bool);
+                    break;
+                case EPrimitiveDataType.Int16:
+                    Instance.WriteInt16(name, value.Int16);
+                    break;
+                case EPrimitiveDataType.UInt16:
+                    Instance.WriteUInt16(name, value.UInt16);
+                    break;
+            }
+            
         }
 
         public void StartProcessing(Int64 timeSpan)
         {
             // OperatingMode muss vlt geändert werden auf Default oder so
             Instance.StartProcessing(timeSpan);
+        }
+
+        public STagInfo[] TagInfos()
+        {
+            return Instance.TagInfos.ToArray();
         }
     }
 }
