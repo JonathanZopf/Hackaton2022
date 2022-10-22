@@ -23,7 +23,6 @@ namespace Hackathon
             this.ApiCaller = ApiCaller;
             try {
                 Instance = SimulationRuntimeManager.CreateInterface(InstanceName); //hooks into existing VirtualPLC, works
-
                 Instance.CommunicationInterface = ECommunicationInterface.TCPIP;
                 Instance.IsSendSyncEventInDefaultModeEnabled = SyncEventInDefaultModeEnabled;
                 Instance.OperatingMode = OperatingMode;
@@ -65,6 +64,11 @@ namespace Hackathon
                     Console.WriteLine("Error when updating TagList:", ex.Message);
                 }
             }
+            if(in_OperatingState == EOperatingState.Freeze)
+            {
+                Console.WriteLine("Freeze Mode entered");
+                RunToNextSyncPoint();
+            }
         }
 
         public void RunToNextSyncPoint()
@@ -95,6 +99,12 @@ namespace Hackathon
         public void InstanceWrite(string name, SDataValue value)
         {
             Instance.Write(name, value);
+        }
+
+        public void StartProcessing(Int64 timeSpan)
+        {
+            // OperatingMode muss vlt geändert werden auf Default oder so
+            Instance.StartProcessing(timeSpan);
         }
     }
 }

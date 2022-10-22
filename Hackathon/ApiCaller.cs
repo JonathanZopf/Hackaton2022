@@ -42,50 +42,34 @@ namespace Hackathon
 
         public bool CheckVariableTimeDependent(string name, bool value, int time)
         {
-            if (CheckVariable(name, value))
-            {
-                SDataValue result = PLCInstance.InstanceRead(name);
-                WatchListTime.Add(name, (result, time - 100));
-                return true;
-            }
-            return false;
+            return true;
         }
 
         public bool CheckVariableTimeDependent(string name, int value, int time)
         {
-            if (CheckVariable(name, value))
-            {
-                SDataValue result = PLCInstance.InstanceRead(name);
-                WatchListTime.Add(name, (result, time - 100));
-                return true;
-            }
-            return false;
+            return true;
         }
 
         public bool CheckVariableCycleDependent(string name, bool value, int cycles)
         {
-
             for(int i = 0; i < cycles; i++)
             {
+                if (!CheckVariable(name, value)) 
+                    return false;
+                RunToNextSyncPoint();
             }
-            if (CheckVariable(name, value))
-            {
-                SDataValue result = PLCInstance.InstanceRead(name);
-                WatchListCycle.Add(name, (result, cycles - 1));
-                return true;
-            }
-            return false;
+            return true;
         }
 
         public bool CheckVariableCycleDependent(string name, int value, int cycles)
         {
-            if (CheckVariable(name, value))
+            for (int i = 0; i < cycles; i++)
             {
-                SDataValue result = PLCInstance.InstanceRead(name);
-                WatchListCycle.Add(name, (result, cycles - 1));
-                return true;
+                if (!CheckVariable(name, value)) 
+                    return false;
+                RunToNextSyncPoint();
             }
-            return false;
+            return true;
         }
         public void SetVariable(string name, bool value)
         {
@@ -141,41 +125,8 @@ namespace Hackathon
                     else
                         State = ApiCallerState.TestRunning;
                     break;
-                case ApiCallerState.TestRunning:
-                    CheckWatchListCycles();
-                    //CheckWatchListTime();
-                    break;
             }
          }
-
-        public void CheckWatchListTime()
-        {
-            foreach(var variable in WatchListTime)
-            {
-
-            }
-        }
-
-        public void CheckWatchListCycles()
-        {
-            foreach (var variable in WatchListCycle)
-            {
-                int cycles = variable.Value.cycles;
-                SDataValue newValue = PLCInstance.InstanceRead(variable.Key);
-                switch (newValue.Type)
-                {
-                    case EPrimitiveDataType.Bool:
-                        bool value = variable.Value.value.Bool;
-                        if(value == newValue.Bool)
-                        {
-
-                        }
-                        break;
-                    case EPrimitiveDataType.Int16:
-                        break;
-                }
-            }
-        }
     }
 
     enum ApiCallerState
