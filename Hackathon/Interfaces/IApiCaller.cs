@@ -16,8 +16,11 @@ namespace Hackathon.Interfaces
 
         bool CheckVariableTimeDependent(string name, bool value, int time);
         bool CheckVariableTimeDependent(string name, int value, int time);
+        bool CheckVariableCycleDependent(string name, bool value, int cycles);
+        bool CheckVariableCycleDependent(string name, int value, int cycles);
 
         void RunToNextSyncPoint();
-        void RunToNextSyncPoint(int time);
+        void RunMilliSeconds(int time);
+        void RunCycles(int cycles);
     }
 }

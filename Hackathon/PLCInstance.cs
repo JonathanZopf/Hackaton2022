@@ -16,9 +16,11 @@ namespace Hackathon
 
         private IInstance Instance;
         private bool IsConfigured = false;
+        private ApiCaller ApiCaller;
 
-        public PLCInstance()
+        public PLCInstance(ApiCaller ApiCaller)
         {
+            this.ApiCaller = ApiCaller;
             try {
                 Instance = SimulationRuntimeManager.CreateInterface(InstanceName); //hooks into existing VirtualPLC, works
 
@@ -44,7 +46,7 @@ namespace Hackathon
 
         public void OnEndOfCycle(IInstance in_Sender, ERuntimeErrorCode in_ErrorCode, DateTime in_DateTime, UInt32 in_PipId, Int64 in_TimeSinceSameSyncPoint_ns, Int64 in_TimeSinceAnySyncPoint_ns, UInt32 in_SyncPointCount)
         {
-           
+            ApiCaller.OnEndOfCycle(in_Sender, in_ErrorCode, in_DateTime, in_PipId, in_TimeSinceSameSyncPoint_ns, in_TimeSinceAnySyncPoint_ns, in_SyncPointCount);
         }
              
         void OnOperatingStateChanged(IInstance in_Sender, ERuntimeErrorCode in_ErrorCode, DateTime in_DateTime, EOperatingState in_PrevState, EOperatingState in_OperatingState)
@@ -68,6 +70,31 @@ namespace Hackathon
         public void RunToNextSyncPoint()
         {
             Instance.RunToNextSyncPoint();
+        }
+
+        public void PowerOn()
+        {
+            Instance.PowerOn();
+        }
+
+        public void PowerOff()
+        {
+            Instance.PowerOff();
+        }
+
+        public void InstanceOperatingMode(EOperatingMode mode)
+        {
+            Instance.OperatingMode = mode;
+        }
+
+        public SDataValue InstanceRead(string name)
+        {
+            return Instance.Read(name);
+        }
+
+        public void InstanceWrite(string name, SDataValue value)
+        {
+            Instance.Write(name, value);
         }
     }
 }
