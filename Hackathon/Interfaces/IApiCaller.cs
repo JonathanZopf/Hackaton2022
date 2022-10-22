@@ -10,15 +10,14 @@ namespace Hackathon.Interfaces
     {
         void SetVariable(string name, bool value);
         void SetVariable(string name, int value);
-        void SetVariable(string name, float value);
 
         bool CheckVariable(string name, bool value);
         bool CheckVariable(string name, int value);
-        bool CheckVariable(string name, float value);
 
-        bool CheckVariableTimeDependent(string name, bool value, float time);
-        bool CheckVariableTimeDependent(string name, int value, float time);
-        bool CheckVariableTimeDependent(string name, float value, float time);
+        bool CheckVariableTimeDependent(string name, bool value, int time);
+        bool CheckVariableTimeDependent(string name, int value, int time);
 
+        void RunToNextSyncPoint();
+        void RunToNextSyncPoint(int time);
     }
 }

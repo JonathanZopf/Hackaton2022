@@ -11,7 +11,7 @@ namespace Hackathon
     class PLCInstance
     {
         private readonly string InstanceName = "001";
-        private readonly EOperatingMode OperatingMode = EOperatingMode.SingleStep_Bus;
+        private readonly EOperatingMode OperatingMode = EOperatingMode.SingleStep_C;
         private readonly bool SyncEventInDefaultModeEnabled = true;
 
         private IInstance Instance;
@@ -29,6 +29,7 @@ namespace Hackathon
                 Instance.OnSyncPointReached += OnEndOfCycle;
                 Instance.OnOperatingStateChanged += OnOperatingStateChanged;
 
+                Instance.PowerOn();
                 Instance.Run();
                 Console.WriteLine("PLCInstance created.");
             }catch(SimulationRuntimeException ex)
@@ -43,9 +44,9 @@ namespace Hackathon
 
         public void OnEndOfCycle(IInstance in_Sender, ERuntimeErrorCode in_ErrorCode, DateTime in_DateTime, UInt32 in_PipId, Int64 in_TimeSinceSameSyncPoint_ns, Int64 in_TimeSinceAnySyncPoint_ns, UInt32 in_SyncPointCount)
         {
-            Instance.RunToNextSyncPoint();
+           
         }
-
+             
         void OnOperatingStateChanged(IInstance in_Sender, ERuntimeErrorCode in_ErrorCode, DateTime in_DateTime, EOperatingState in_PrevState, EOperatingState in_OperatingState)
         {
             Console.WriteLine($"Operating Mode changed to {in_OperatingState}");
@@ -62,6 +63,11 @@ namespace Hackathon
                     Console.WriteLine("Error when updating TagList:", ex.Message);
                 }
             }
+        }
+
+        public void RunToNextSyncPoint()
+        {
+            Instance.RunToNextSyncPoint();
         }
     }
 }
