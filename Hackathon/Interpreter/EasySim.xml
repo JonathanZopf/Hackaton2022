@@ -316,7 +316,8 @@ PushToInstructionStack($1, $2, $3, "");
                 <TOKEN name="Number"/>
                 <TOKEN name="cycles"/>
                 <CODE>
-                    $$ = $1 + $2 + $3;
+                    //$$ = $1 + $2 + $3; we drop 'for' and concat the rest (we keep units for identification)
+$$ = $2 + "-" + $3;
 
                 </CODE>
             </RIGHTSIDE>

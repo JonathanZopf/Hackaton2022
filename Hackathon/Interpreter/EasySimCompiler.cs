@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections;
 using System.Text.RegularExpressions;
 
-namespace Hackathon.Interpreter
+namespace Hackathon.Iterpreter
 {
     /// <summary>
     /// Zusammenfassung für MyCompiler.
@@ -396,7 +396,8 @@ namespace Hackathon.Interpreter
 
                     break;
                 case 14:
-                    yyval = yyv[yysp - 2] + yyv[yysp - 1] + yyv[yysp - 0];
+                    //yyval = yyv[yysp-2] + yyv[yysp-1] + yyv[yysp-0]; we drop 'for' and concat the rest (we keep units for identification)
+                    yyval = yyv[yysp - 1] + "-" + yyv[yysp - 0];
 
                     break;
                 case 15:
