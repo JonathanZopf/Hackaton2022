@@ -14,7 +14,7 @@ namespace Hackathon.Interfaces
         /// </summary>
         /// <param name="name">PLC Tag</param>
         /// <param name="value">boolean value</param>
-        /// <returns>true/false on success</returns>
+        /// <returns>true/false on success/failure</returns>
         bool SetVariable(string name, bool value);
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Hackathon.Interfaces
         /// </summary>
         /// <param name="name">PLC Tag</param>
         /// <param name="value">int value</param>
-        /// <returns>true/false on success</returns>
+        /// <returns>true/false on success/failure</returns>
         bool SetVariable(string name, int value);
 
         /// <summary>
