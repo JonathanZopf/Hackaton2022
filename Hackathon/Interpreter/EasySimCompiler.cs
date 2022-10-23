@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections;
 using System.Text.RegularExpressions;
 
-namespace Hackathon.Iterpreter
+namespace Hackathon.Interpreter
 {
     /// <summary>
     /// Zusammenfassung für MyCompiler.
