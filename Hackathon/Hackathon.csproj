@@ -53,7 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiCaller.cs" />
-    <Compile Include="Grammar\EasySimListener.cs" />
     <Compile Include="Interfaces\IApiCaller.cs" />
     <Compile Include="PLCInstance.cs" />
     <Compile Include="Program.cs" />
@@ -61,8 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Grammar\EasySimLexer.g4" />
-    <None Include="Grammar\EasySimParser.g4" />
+    <None Include="Grammar\EasySim.g4" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
