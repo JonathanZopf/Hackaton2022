@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Siemens.Simatic.Simulation.Runtime.Api.x86">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Common Files\Siemens\PLCSIMADV\API\4.0\Siemens.Simatic.Simulation.Runtime.Api.x86.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Common Files\Siemens\PLCSIMADV\API\4.0\Siemens.Simatic.Simulation.Runtime.Api.x86.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,12 +48,17 @@
   <ItemGroup>
     <Compile Include="ApiCaller.cs" />
     <Compile Include="Interfaces\IApiCaller.cs" />
+    <Compile Include="Interpreter\EasySimCompiler4.cs" />
     <Compile Include="PLCInstance.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TestData\simple_setters.txt" />
+    <Content Include="TestData\test_one.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

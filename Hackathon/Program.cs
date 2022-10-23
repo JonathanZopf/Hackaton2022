@@ -10,8 +10,11 @@ using System.Threading;
 namespace Hackathon
 {
     class Program
+
 {
         static IApiCaller Caller;
+
+        /*
         static void Main(string[]args)
 { 
             Caller = new ApiCaller();
@@ -136,16 +139,21 @@ namespace Hackathon
                 Thread.Sleep(1000);
                 Caller.RunToNextSyncPoint();
             }
+
+       
            
 
 
-            /*
+            
             Caller.SetVariable("IX_SSC_LightBarrierStorage_I3", false);
             Caller.RunToNextSyncPoint();
             Console.WriteLine(Caller.CheckVariable("QX_VGR_M3_RotateClockwise_Q5", true));
-            */
+           
 
             Console.ReadKey();
         }
+        */
+
     }
+
 }

@@ -1,0 +1,1 @@
+﻿set IX_SSC_LightBarrierStorage_I3 false
