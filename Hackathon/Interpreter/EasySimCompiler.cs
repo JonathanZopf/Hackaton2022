@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections;
 using System.Text.RegularExpressions;
 
-namespace Hackathon.Iterpreter
+namespace Hackathon.Interpreter
 {
     /// <summary>
     /// Zusammenfassung für MyCompiler.
@@ -151,16 +151,16 @@ namespace Hackathon.Iterpreter
                 {
                     if (type.Equals("false"))
                     {
-                        Console.WriteLine(api.SetVariable(identifier, false));
+                        Console.WriteLine($"set {identifier} {api.SetVariable(identifier, false)}");
                     }
                     else if (type.Equals("true"))
                     {
-                        Console.WriteLine(api.SetVariable(identifier, true));
+                        Console.WriteLine($"set {identifier} {api.SetVariable(identifier, true)}");
                     }
                     // set a number
                     else
                     {
-                        Console.WriteLine(api.SetVariable(identifier, Int16.Parse(type)));
+                        Console.WriteLine($"set {identifier} {api.SetVariable(identifier, Int16.Parse(type))}");
                     }
                 }
                 //Call API-Methods repsonsible for asserting sensor state - without time interval
@@ -168,16 +168,16 @@ namespace Hackathon.Iterpreter
                 {
                     if (type.Equals("false"))
                     {
-                        Console.WriteLine(api.CheckVariable(identifier, false));
+                        Console.WriteLine($"check {identifier} {api.CheckVariable(identifier, false)}");
                     }
                     else if (type.Equals("true"))
                     {
-                        Console.WriteLine(api.CheckVariable(identifier, true));
+                        Console.WriteLine($"check {identifier} {api.CheckVariable(identifier, true)}");
                     }
                     // set a number
                     else
                     {
-                        Console.WriteLine(api.CheckVariable(identifier, Int16.Parse(type)));
+                        Console.WriteLine($"check {identifier} {api.CheckVariable(identifier, Int16.Parse(type))}");
                     }
                 }
                 //Call API-Methods repsonsible for asserting sensor state - with time interval
@@ -193,16 +193,16 @@ namespace Hackathon.Iterpreter
                         // data is boolean
                         if (type.Equals("false"))
                         {
-                            Console.WriteLine(api.CheckVariableTimeDependent(identifier, false, time));
+                            Console.WriteLine($"check time dependent {api.CheckVariableTimeDependent(identifier, false, time)}");
                         }
                         else if (type.Equals("true"))
                         {
-                            Console.WriteLine(api.CheckVariableTimeDependent(identifier, true, time));
+                            Console.WriteLine($"check time dependent {api.CheckVariableTimeDependent(identifier, true, time)}");
                         }
                         // data is integer
                         else
                         {
-                            Console.WriteLine(api.CheckVariableTimeDependent(identifier, Int16.Parse(type), time));
+                            Console.WriteLine($"check time dependent {api.CheckVariableTimeDependent(identifier, Int16.Parse(type), time)}");
                         }
                     }
                     // we stop time using cycles
@@ -210,16 +210,16 @@ namespace Hackathon.Iterpreter
                     {
                         if (type.Equals("false"))
                         {
-                            Console.WriteLine(api.CheckVariableCycleDependent(identifier, false, time));
+                            Console.WriteLine($"check cycle dependent {api.CheckVariableCycleDependent(identifier, false, time)}");
                         }
                         else if (type.Equals("true"))
                         {
-                            Console.WriteLine(api.CheckVariableCycleDependent(identifier, true, time));
+                            Console.WriteLine($"check time dependent {api.CheckVariableCycleDependent(identifier, true, time)}");
                         }
                         // data is integer
                         else
                         {
-                            Console.WriteLine(api.CheckVariableCycleDependent(identifier, Int16.Parse(type), time));
+                            Console.WriteLine($"check time dependent {api.CheckVariableCycleDependent(identifier, Int16.Parse(type), time)}");
                         }
                     }
                 }
