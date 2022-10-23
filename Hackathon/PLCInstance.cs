@@ -106,22 +106,30 @@ namespace Hackathon
             return Instance.Read(name);
         }
 
-        public void InstanceWrite(string name, SDataValue value)
+        public bool InstanceWrite(string name, SDataValue value)
         {
-            Instance.UpdateTagList();
-            switch (value.Type)
+            try
             {
-                case EPrimitiveDataType.Bool:
-                    Instance.WriteBool(name, value.Bool);
-                    break;
-                case EPrimitiveDataType.Int16:
-                    Instance.WriteInt16(name, value.Int16);
-                    break;
-                case EPrimitiveDataType.UInt16:
-                    Instance.WriteUInt16(name, value.UInt16);
-                    break;
+                Instance.UpdateTagList();
+                switch (value.Type)
+                {
+                    case EPrimitiveDataType.Bool:
+                        Instance.WriteBool(name, value.Bool);
+                        break;
+                    case EPrimitiveDataType.Int16:
+                        Instance.WriteInt16(name, value.Int16);
+                        break;
+                    case EPrimitiveDataType.UInt16:
+                        Instance.WriteUInt16(name, value.UInt16);
+                        break;
+                }
             }
-            
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            return true;
         }
 
         public void StartProcessing(Int64 timeSpan)
