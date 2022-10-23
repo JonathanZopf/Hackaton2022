@@ -79,13 +79,13 @@ namespace Hackathon
             RunToNextSyncPoint();
             return CheckVariableCycleDependent(name, value, cycles - 1);
         }
-        public void SetVariable(string name, bool value)
+        public bool SetVariable(string name, bool value)
         {
             SDataValue sValue = new SDataValue(){ Type = EPrimitiveDataType.Bool, Bool = value };
-            PLCInstance.InstanceWrite(name, sValue);
+            return PLCInstance.InstanceWrite(name, sValue);
         }
 
-        public void SetVariable(string name, int value)
+        public bool SetVariable(string name, int value)
         {
             EPrimitiveDataType Type = GetEPrimitiveDataType(name);
             SDataValue sValue = new SDataValue();
@@ -98,7 +98,7 @@ namespace Hackathon
                     sValue = new SDataValue() { Type = Type, UInt16 = (ushort) value };
                     break;
             }
-            PLCInstance.InstanceWrite(name, sValue);
+            return PLCInstance.InstanceWrite(name, sValue);
         }
 
         public void RunToNextSyncPoint()
