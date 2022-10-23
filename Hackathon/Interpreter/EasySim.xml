@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VCC>
+    <CODETYPE value="C#"/>
+    <PARSERTYPE value="LALR(1)"/>
+    <SCANNER>
+        <READ value="\(" token="braceL" color="#E1FFFF"/>
+        <READ value="\)" token="braceR" color="#E1FFFF"/>
+        <READ value="assert" token="assert" color="#E1FFFF"/>
+        <READ value="set" token="set" color="#E1FFFF"/>
+        <READ value="_" token="Underscore" color="#E1FFFF"/>
+        <READ value="for" token="for" color="#E1FFFF"/>
+        <READ value="cycles" token="cycles" color="#E1FFFF"/>
+        <READ value="ms" token="ms" color="#E1FFFF"/>
+        <READ value="[1-9][0-9]*" token="Number" color="#E1FFFF"/>
+        <READ value="true|false" token="Boolean" color="#E1FFFF"/>
+        <READ value="wait" token="wait" color="#E1FFFF"/>
+        <READ value="[\r\n\t\s]" token="IGNORE" color="#E1FFFF"/>
+        <READ value="IX_[A-Za-z0-9][A-Za-z0-9_]*" token="IX" color="#E1FFFF"/>
+        <READ value="IW_[A-Za-z0-9][A-Za-z0-9_]*" token="IW" color="#E1FFFF"/>
+        <READ value="QX_[A-Za-z0-9][A-Za-z0-9_]*" token="QX" color="#E1FFFF"/>
+        <READ value="QW_[A-Za-z0-9][A-Za-z0-9_]*" token="QW" color="#E1FFFF"/>
+    </SCANNER>
+    <GLOBALCODE>
+        // VCC prevents imports here - which is why we can't use dynamicly resizing arrays and we use hacks
+ 
+static int MAX_ARRAY_LENGHT = 10000; //IMPLICATION: if a single block execution contains more than 10k sensors / actors to check / set this will break the code
+//static int INITIAL_ARRAY_SIZE = 8;
+static int SUB_ARRAY_LENGHT = 4;
+//static ApiCaller api = new ApiCaller();
+
+int actualArrayLength = 0;
+string[,] instructionStack = new string[MAX_ARRAY_LENGHT, SUB_ARRAY_LENGHT];
+//string[,] instructionStack = new string[INITIAL_ARRAY_SIZE, SUB_ARRAY_LENGHT];
+
+
+/* For Re-Initialization (Resetting) of the instructionStack and its components-
+belongs to VCC implied no imports restriction */
+void ResetInstructionStack(){
+     //instructionStack = new string[INITIAL_ARRAY_SIZE, SUB_ARRAY_LENGHT];
+     instructionStack = new string[MAX_ARRAY_LENGHT, SUB_ARRAY_LENGHT];
+     actualArrayLength = 0;
+}
+
+/* Adds all elements to the instructionStack at the currently last index -
+belongs to VCC implied no imports restriction */
+void PushToInstructionStack(string action, string identifier, string type, string interval){                     
+     // increase array size if needed (double it)
+/*
+     if (actualArrayLength &gt;= instructionStack.Length-1){
+        string[,] copyArray = new string[actualArrayLength*2, SUB_ARRAY_LENGHT];
+        instructionStack.CopyTo(copyArray, 0);
+        instructionStack = copyArray;
+     }
+*/
+     
+     // insert values
+     instructionStack[actualArrayLength, 0] = action;
+     instructionStack[actualArrayLength, 1] = identifier;
+     instructionStack[actualArrayLength, 2] = type;
+     instructionStack[actualArrayLength, 3] = interval;
+     actualArrayLength += 1;
+}
+
+/* Reduces the instruction stack to its real number of elements -
+belongs to VCC implied no imports restriction */
+void InstructionStackReduce(int i)
+        {
+            //Poor and ugly way to reduce this arrays size
+            string[,] array = new string[i, SUB_ARRAY_LENGHT];
+            for (int a = 0; a &lt; i; a++)
+            {
+                for (int b = 0; b &lt; SUB_ARRAY_LENGHT; b++)
+                {
+                    array[a, b] = instructionStack[a, b];
+                }
+            }
+            instructionStack = array;
+        }
+
+/*
+Calls the API-Methods Provided by ApiCaller Interface Implementer based on the parsed input.
+*/
+void makeApiCalls(){
+        // interval is concatenated String in form of Number-Unit
+        
+        // loop for all instructions on stack
+        for (int j = 0; j &lt; actualArrayLength; j++){
+            string action = instructionStack[j, 0];
+            string identifier = instructionStack[j, 1];
+            string type = instructionStack[j, 2];
+            string interval = instructionStack[j, 3];
+            
+        
+            //Call API-Methods responsible for setting sensors
+            if (action.Equals("set")){
+               if (type.Equals("false")){
+                  //Console.WriteLine(api.SetVariable(identifier, false));
+               }
+               else if (type.Equals("true")){
+                  //Console.WriteLine(api.SetVariable(identifier, true));
+               } 
+               // set a number
+               else {
+                    //Console.WriteLine(api.SetVariable(identifier, Int16.Parse(type)));
+               }
+            }
+            //Call API-Methods repsonsible for asserting sensor state - without time interval
+            else if (interval.Length == 0){
+               if (type.Equals("false")){
+                  //Console.WriteLine(api.CheckVariable(identifier, false));
+               }
+               else if (type.Equals("true")){
+                  //Console.WriteLine(api.CheckVariable(identifier, true));
+               } 
+               // set a number
+               else {
+                    //Console.WriteLine(api.CheckVariable(identifier, Int16.Parse(type)));
+               }
+            } 
+            //Call API-Methods repsonsible for asserting sensor state - with time interval
+            else {
+                 string[] intervalSplit = interval.Split("-".ToCharArray());
+                 int time = Int16.Parse(intervalSplit[0]);
+                 string timeUnit = intervalSplit[1];
+               
+                 // we stop time using ms
+                 if (timeUnit.Equals("ms")){
+                 // data is boolean
+                     if (type.Equals("false")){
+                        //Console.WriteLine(api.CheckVariableTimeDependent(identifier, false, time));
+                     }
+                     else if (type.Equals("true")){
+                        //Console.WriteLine(api.CheckVariableTimeDependent(identifier, true, time));
+                     } 
+                     // data is integer
+                     else {
+                        //Console.WriteLine(api.CheckVariableTimeDependent(identifier, Int16.Parse(type), time));
+                    }
+                }
+               // we stop time using cycles
+               else {
+                    if (type.Equals("false")){
+                        //Console.WriteLine(api.CheckVariableCycleDependent(identifier, false, time));
+                     }
+                     else if (type.Equals("true")){
+                        //Console.WriteLine(api.CheckVariableCycleDependent(identifier, true, time));
+                     } 
+                     // data is integer
+                     else {
+                        //Console.WriteLine(api.CheckVariableCycleDependent(identifier, Int16.Parse(type), time));
+                    }
+               }
+            }
+        }
+        
+        //api.RunToNextSyncPoint(); //TODO - as of now does not allow for multiple 'for x time' statements! 
+        // clear stack
+        ResetInstructionStack();
+}
+
+    </GLOBALCODE>
+    <RULES>
+        <RULE name="Program" color="#FFE1FF">
+            <RIGHTSIDE>
+                <RULE name="ExecuteTogether"/>
+                <RULE name="LOOPProgram"/>
+                <CODE>
+                    $$ = $1 + $2;
+//Output.WriteLine($$);
+
+                </CODE>
+            </RIGHTSIDE>
+            <RIGHTSIDE>
+                <RULE name="ExecuteSequential"/>
+                <RULE name="LOOPProgram"/>
+                <CODE>
+                    $$ = $1 + $2;
+
+                </CODE>
+            </RIGHTSIDE>
+        </RULE>
+        <RULE name="ExecuteSequential" color="#FFE1FF">
+            <RIGHTSIDE>
+                <RULE name="Instruction"/>
+                <CODE>
+                    $$ = $1;
+// stack should only have one instruction, regardless we use the same method call as for ExecuteTogetheer NT (simplicity) 
+
+// Called after each sequential execution (this will most commonly be used).
+// By convention sequential executions happen on a per line basis. (use braces to schedule actions to be executed together)
+makeApiCalls();
+
+                </CODE>
+            </RIGHTSIDE>
+            <RIGHTSIDE>
+                <TOKEN name="wait"/>
+                <RULE name="Interval"/>
+                <CODE>
+                    $$ = $1 + $2;
+
+// todo call wait befehl
+string[] intervalSplit1 = $2.Split("-".ToCharArray());
+string time1 = intervalSplit1[0];
+string timeUnit1 = intervalSplit1[1];
+
+// Call API-Method specific for ms
+if (timeUnit1.Equals("ms")){
+   //api.RunMilliSeconds(Int16.Parse(time1));
+} 
+// Call API-Method specific for cycles
+else {
+   //api.RunCycles(Int16.Parse(time1));
+}
+
+                </CODE>
+            </RIGHTSIDE>
+        </RULE>
+        <RULE name="LOOPProgram" color="#FFE1FF">
+            <RIGHTSIDE>
+                <RULE name="Program"/>
+                <CODE>
+                    $$ = $1;
+
+                </CODE>
+            </RIGHTSIDE>
+            <RIGHTSIDE>
+                <CODE>
+                    $$ = "";
+
+                </CODE>
+            </RIGHTSIDE>
+        </RULE>
+        <RULE name="LOOPSequential" color="#FFE1FF">
+            <RIGHTSIDE>
+                <RULE name="Instruction"/>
+                <RULE name="LOOPSequential"/>
+                <CODE>
+                    $$ = $1 + $2;
+
+                </CODE>
+            </RIGHTSIDE>
+            <RIGHTSIDE>
+                <CODE>
+                    $$ = "";
+// todo talk to co-framework, use everything from stack
+// interval is concatenated String in form of Number-Unit
+
+// called when ExecuteTogether Block ends - This is when at least two instructions 
+// where marked as checked together using braces.
+makeApiCalls();
+
+                </CODE>
+            </RIGHTSIDE>
+        </RULE>
+        <RULE name="ExecuteTogether" color="#FFE1FF">
+            <RIGHTSIDE>
+                <TOKEN name="braceL"/>
+                <RULE name="Instruction"/>
+                <RULE name="Instruction"/>
+                <RULE name="LOOPSequential"/>
+                <TOKEN name="braceR"/>
+                <CODE>
+                    $$ = $1 + $2 + $3 + $4 + $5;
+
+                </CODE>
+            </RIGHTSIDE>
+        </RULE>
+        <RULE name="Instruction" color="#FFE1FF">
+            <RIGHTSIDE>
+                <TOKEN name="assert"/>
+                <TOKEN name="QX"/>
+                <TOKEN name="Boolean"/>
+                <RULE name="Interval"/>
+                <CODE>
+                    $$ = $1 + $2 + $3 + $4;
+PushToInstructionStack($1, $2, $3, $4);
+
+
+                </CODE>
+            </RIGHTSIDE>
+            <RIGHTSIDE>
+                <TOKEN name="assert"/>
+                <TOKEN name="QW"/>
+                <TOKEN name="Number"/>
+                <RULE name="Interval"/>
+                <CODE>
+                    $$ = $1 + $2 + $3 + $4;
+PushToInstructionStack($1, $2, $3, $4);
+
+                </CODE>
+            </RIGHTSIDE>
+            <RIGHTSIDE>
+                <TOKEN name="set"/>
+                <TOKEN name="IX"/>
+                <TOKEN name="Boolean"/>
+                <CODE>
+                    $$ = $1 + $2 + $3;
+PushToInstructionStack($1, $2, $3, "");
+
+                </CODE>
+            </RIGHTSIDE>
+            <RIGHTSIDE>
+                <TOKEN name="set"/>
+                <TOKEN name="IW"/>
+                <TOKEN name="Number"/>
+                <CODE>
+                    $$ = $1 + $2 + $3;
+PushToInstructionStack($1, $2, $3, "");
+
+                </CODE>
+            </RIGHTSIDE>
+        </RULE>
+        <RULE name="Interval" color="#FFE1FF">
+            <RIGHTSIDE>
+                <TOKEN name="for"/>
+                <TOKEN name="Number"/>
+                <TOKEN name="cycles"/>
+                <CODE>
+                    $$ = $1 + $2 + $3;
+
+                </CODE>
+            </RIGHTSIDE>
+            <RIGHTSIDE>
+                <TOKEN name="for"/>
+                <TOKEN name="Number"/>
+                <TOKEN name="ms"/>
+                <CODE>
+                    //$$ = $1 + $2 + $3; we drop 'for' and concat the rest (we keep units for identification)
+$$ = $2 + "-" + $3;
+
+                </CODE>
+            </RIGHTSIDE>
+            <RIGHTSIDE>
+                <CODE>
+                    $$ = "";
+
+                </CODE>
+            </RIGHTSIDE>
+        </RULE>
+    </RULES>
+</VCC>

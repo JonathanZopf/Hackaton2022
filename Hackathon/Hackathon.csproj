@@ -54,7 +54,7 @@
   <ItemGroup>
     <Compile Include="ApiCaller.cs" />
     <Compile Include="Interfaces\IApiCaller.cs" />
-    <Compile Include="Interpreter\EasySimCompiler4.cs" />
+    <Compile Include="Interpreter\EasySimCompiler.cs" />
     <Compile Include="PLCInstance.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -65,6 +65,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Interpreter\EasySim.xml" />
     <Content Include="TestData\simple_setters.txt" />
     <Content Include="TestData\test_one.txt" />
   </ItemGroup>

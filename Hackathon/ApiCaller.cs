@@ -123,6 +123,9 @@ namespace Hackathon
         public void OnEndOfCycle(IInstance in_Sender, ERuntimeErrorCode in_ErrorCode, DateTime in_DateTime, UInt32 in_PipId, Int64 in_TimeSinceSameSyncPoint_ns, Int64 in_TimeSinceAnySyncPoint_ns, UInt32 in_SyncPointCount)
         {
             TimeSinceSameSyncPoint = in_TimeSinceSameSyncPoint_ns;
+            //Console.WriteLine("ITSSP: " + in_TimeSinceSameSyncPoint_ns); // todo delete
+            //Console.WriteLine("TSSP: " + in_TimeSinceAnySyncPoint_ns); // todo delete
+
             switch (this.State)
             {
                 case ApiCallerState.NeutralTime:

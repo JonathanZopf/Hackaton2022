@@ -151,16 +151,16 @@ namespace Hackathon.Interpreter
                 {
                     if (type.Equals("false"))
                     {
-                        //Console.Writeline(api.SetVariable(identifier, false));
+                        Console.WriteLine(api.SetVariable(identifier, false));
                     }
                     else if (type.Equals("true"))
                     {
-                        //Console.Writeline(api.SetVariable(identifier, true));
+                        Console.WriteLine(api.SetVariable(identifier, true));
                     }
                     // set a number
                     else
                     {
-                        //Console.Writeline(api.SetVariable(identifier, Int16.Parse(type)));
+                        Console.WriteLine(api.SetVariable(identifier, Int16.Parse(type)));
                     }
                 }
                 //Call API-Methods repsonsible for asserting sensor state - without time interval
@@ -168,16 +168,16 @@ namespace Hackathon.Interpreter
                 {
                     if (type.Equals("false"))
                     {
-                        //Console.Writeline(api.CheckVariable(identifier, false));
+                        Console.WriteLine(api.CheckVariable(identifier, false));
                     }
                     else if (type.Equals("true"))
                     {
-                        //Console.Writeline(api.CheckVariable(identifier, true));
+                        Console.WriteLine(api.CheckVariable(identifier, true));
                     }
                     // set a number
                     else
                     {
-                        //Console.Writeline(api.CheckVariable(identifier, Int16.Parse(type)));
+                        Console.WriteLine(api.CheckVariable(identifier, Int16.Parse(type)));
                     }
                 }
                 //Call API-Methods repsonsible for asserting sensor state - with time interval
@@ -193,16 +193,16 @@ namespace Hackathon.Interpreter
                         // data is boolean
                         if (type.Equals("false"))
                         {
-                            //Console.Writeline(api.CheckVariableTimeDependent(identifier, false, time));
+                            Console.WriteLine(api.CheckVariableTimeDependent(identifier, false, time));
                         }
                         else if (type.Equals("true"))
                         {
-                            //Console.Writeline(api.CheckVariableTimeDependent(identifier, true, time));
+                            Console.WriteLine(api.CheckVariableTimeDependent(identifier, true, time));
                         }
                         // data is integer
                         else
                         {
-                            //Console.Writeline(api.CheckVariableTimeDependent(identifier, Int16.Parse(type), time));
+                            Console.WriteLine(api.CheckVariableTimeDependent(identifier, Int16.Parse(type), time));
                         }
                     }
                     // we stop time using cycles
@@ -210,22 +210,22 @@ namespace Hackathon.Interpreter
                     {
                         if (type.Equals("false"))
                         {
-                            //Console.Writeline(api.CheckVariableCycleDependent(identifier, false, time));
+                            Console.WriteLine(api.CheckVariableCycleDependent(identifier, false, time));
                         }
                         else if (type.Equals("true"))
                         {
-                            //Console.Writeline(api.CheckVariableCycleDependent(identifier, true, time));
+                            Console.WriteLine(api.CheckVariableCycleDependent(identifier, true, time));
                         }
                         // data is integer
                         else
                         {
-                            //Console.Writeline(api.CheckVariableCycleDependent(identifier, Int16.Parse(type), time));
+                            Console.WriteLine(api.CheckVariableCycleDependent(identifier, Int16.Parse(type), time));
                         }
                     }
                 }
             }
 
-            //api.RunToNextSyncPoint(); //TODO - as of now does not allow for multiple 'for x time' statements! 
+            api.RunToNextSyncPoint(); //TODO - as of now does not allow for multiple 'for x time' statements! 
             // clear stack
             ResetInstructionStack();
         }
@@ -241,8 +241,8 @@ namespace Hackathon.Interpreter
         {
 
             bool ShowTokens = false;
-            string InputFilename = "";
-            string OutputFilename = "";
+            string InputFilename = "../../TestData/test_one.txt";
+            string OutputFilename = "idc.txt";
 
             foreach (string s in args)
             {
@@ -329,28 +329,6 @@ namespace Hackathon.Interpreter
 
                     break;
                 case 4:
-                    yyval = yyv[yysp - 0];
-
-                    break;
-                case 5:
-                    yyval = "";
-
-                    break;
-                case 6:
-                    yyval = yyv[yysp - 1] + yyv[yysp - 0];
-
-                    break;
-                case 7:
-                    yyval = "";
-                    // todo talk to co-framework, use everything from stack
-                    // interval is concatenated String in form of Number-Unit
-
-                    // called when ExecuteTogether Block ends - This is when at least two instructions 
-                    // where marked as checked together using braces.
-                    makeApiCalls();
-
-                    break;
-                case 8:
                     yyval = yyv[yysp - 1] + yyv[yysp - 0];
 
                     // todo call wait befehl
@@ -361,14 +339,35 @@ namespace Hackathon.Interpreter
                     // Call API-Method specific for ms
                     if (timeUnit1.Equals("ms"))
                     {
-                        //api.RunMilliSeconds(Int16.Parse(time1));
+                        api.RunMilliSeconds(Int16.Parse(time1));
                     }
                     // Call API-Method specific for cycles
                     else
                     {
-                        //api.RunCycles(Int16.Parse(time1));
+                        api.RunCycles(Int16.Parse(time1));
                     }
 
+                    break;
+                case 5:
+                    yyval = yyv[yysp - 0];
+
+                    break;
+                case 6:
+                    yyval = "";
+
+                    break;
+                case 7:
+                    yyval = yyv[yysp - 1] + yyv[yysp - 0];
+
+                    break;
+                case 8:
+                    yyval = "";
+                    // todo talk to co-framework, use everything from stack
+                    // interval is concatenated String in form of Number-Unit
+
+                    // called when ExecuteTogether Block ends - This is when at least two instructions 
+                    // where marked as checked together using braces.
+                    makeApiCalls();
 
                     break;
                 case 9:
@@ -419,7 +418,7 @@ namespace Hackathon.Interpreter
             /// Init Table code:
             ////////////////////////////////////////////////////////////////
 
-            int yynacts = 52;
+            int yynacts = 57;
             int yyngotos = 23;
             int yynstates = 33;
             int yynrules = 16;
@@ -430,55 +429,60 @@ namespace Hackathon.Interpreter
             yya[yyac] = new YYARec(257, 5); yyac++;
             yya[yyac] = new YYARec(259, 6); yyac++;
             yya[yyac] = new YYARec(260, 7); yyac++;
+            yya[yyac] = new YYARec(267, 8); yyac++;
             yya[yyac] = new YYARec(257, 5); yyac++;
             yya[yyac] = new YYARec(259, 6); yyac++;
             yya[yyac] = new YYARec(260, 7); yyac++;
-            yya[yyac] = new YYARec(0, -5); yyac++;
+            yya[yyac] = new YYARec(267, 8); yyac++;
+            yya[yyac] = new YYARec(0, -6); yyac++;
             yya[yyac] = new YYARec(257, 5); yyac++;
             yya[yyac] = new YYARec(259, 6); yyac++;
             yya[yyac] = new YYARec(260, 7); yyac++;
-            yya[yyac] = new YYARec(0, -5); yyac++;
+            yya[yyac] = new YYARec(267, 8); yyac++;
+            yya[yyac] = new YYARec(0, -6); yyac++;
             yya[yyac] = new YYARec(0, 0); yyac++;
             yya[yyac] = new YYARec(259, 6); yyac++;
             yya[yyac] = new YYARec(260, 7); yyac++;
-            yya[yyac] = new YYARec(271, 12); yyac++;
-            yya[yyac] = new YYARec(272, 13); yyac++;
-            yya[yyac] = new YYARec(269, 14); yyac++;
-            yya[yyac] = new YYARec(270, 15); yyac++;
+            yya[yyac] = new YYARec(271, 13); yyac++;
+            yya[yyac] = new YYARec(272, 14); yyac++;
+            yya[yyac] = new YYARec(269, 15); yyac++;
+            yya[yyac] = new YYARec(270, 16); yyac++;
+            yya[yyac] = new YYARec(262, 18); yyac++;
+            yya[yyac] = new YYARec(0, -16); yyac++;
+            yya[yyac] = new YYARec(257, -16); yyac++;
+            yya[yyac] = new YYARec(259, -16); yyac++;
+            yya[yyac] = new YYARec(260, -16); yyac++;
+            yya[yyac] = new YYARec(267, -16); yyac++;
             yya[yyac] = new YYARec(259, 6); yyac++;
             yya[yyac] = new YYARec(260, 7); yyac++;
-            yya[yyac] = new YYARec(266, 17); yyac++;
-            yya[yyac] = new YYARec(265, 18); yyac++;
-            yya[yyac] = new YYARec(266, 19); yyac++;
-            yya[yyac] = new YYARec(265, 20); yyac++;
+            yya[yyac] = new YYARec(266, 20); yyac++;
+            yya[yyac] = new YYARec(265, 21); yyac++;
+            yya[yyac] = new YYARec(266, 22); yyac++;
+            yya[yyac] = new YYARec(265, 23); yyac++;
+            yya[yyac] = new YYARec(265, 24); yyac++;
             yya[yyac] = new YYARec(259, 6); yyac++;
             yya[yyac] = new YYARec(260, 7); yyac++;
-            yya[yyac] = new YYARec(267, 23); yyac++;
-            yya[yyac] = new YYARec(258, -7); yyac++;
-            yya[yyac] = new YYARec(262, 25); yyac++;
+            yya[yyac] = new YYARec(258, -8); yyac++;
+            yya[yyac] = new YYARec(262, 18); yyac++;
             yya[yyac] = new YYARec(0, -16); yyac++;
             yya[yyac] = new YYARec(257, -16); yyac++;
             yya[yyac] = new YYARec(258, -16); yyac++;
             yya[yyac] = new YYARec(259, -16); yyac++;
             yya[yyac] = new YYARec(260, -16); yyac++;
             yya[yyac] = new YYARec(267, -16); yyac++;
-            yya[yyac] = new YYARec(262, 25); yyac++;
+            yya[yyac] = new YYARec(262, 18); yyac++;
             yya[yyac] = new YYARec(0, -16); yyac++;
             yya[yyac] = new YYARec(257, -16); yyac++;
             yya[yyac] = new YYARec(258, -16); yyac++;
             yya[yyac] = new YYARec(259, -16); yyac++;
             yya[yyac] = new YYARec(260, -16); yyac++;
             yya[yyac] = new YYARec(267, -16); yyac++;
-            yya[yyac] = new YYARec(258, 27); yyac++;
+            yya[yyac] = new YYARec(263, 29); yyac++;
+            yya[yyac] = new YYARec(264, 30); yyac++;
+            yya[yyac] = new YYARec(258, 31); yyac++;
             yya[yyac] = new YYARec(259, 6); yyac++;
             yya[yyac] = new YYARec(260, 7); yyac++;
-            yya[yyac] = new YYARec(267, 23); yyac++;
-            yya[yyac] = new YYARec(258, -7); yyac++;
-            yya[yyac] = new YYARec(262, 25); yyac++;
-            yya[yyac] = new YYARec(258, -16); yyac++;
-            yya[yyac] = new YYARec(265, 30); yyac++;
-            yya[yyac] = new YYARec(263, 31); yyac++;
-            yya[yyac] = new YYARec(264, 32); yyac++;
+            yya[yyac] = new YYARec(258, -8); yyac++;
 
             yyg[yygc] = new YYARec(-6, 1); yygc++;
             yyg[yygc] = new YYARec(-5, 2); yygc++;
@@ -486,23 +490,23 @@ namespace Hackathon.Interpreter
             yyg[yygc] = new YYARec(-2, 4); yygc++;
             yyg[yygc] = new YYARec(-6, 1); yygc++;
             yyg[yygc] = new YYARec(-5, 2); yygc++;
-            yyg[yygc] = new YYARec(-4, 8); yygc++;
+            yyg[yygc] = new YYARec(-4, 9); yygc++;
             yyg[yygc] = new YYARec(-3, 3); yygc++;
-            yyg[yygc] = new YYARec(-2, 9); yygc++;
+            yyg[yygc] = new YYARec(-2, 10); yygc++;
             yyg[yygc] = new YYARec(-6, 1); yygc++;
             yyg[yygc] = new YYARec(-5, 2); yygc++;
-            yyg[yygc] = new YYARec(-4, 10); yygc++;
+            yyg[yygc] = new YYARec(-4, 11); yygc++;
             yyg[yygc] = new YYARec(-3, 3); yygc++;
-            yyg[yygc] = new YYARec(-2, 9); yygc++;
-            yyg[yygc] = new YYARec(-6, 11); yygc++;
-            yyg[yygc] = new YYARec(-6, 16); yygc++;
-            yyg[yygc] = new YYARec(-7, 21); yygc++;
-            yyg[yygc] = new YYARec(-6, 22); yygc++;
-            yyg[yygc] = new YYARec(-8, 24); yygc++;
-            yyg[yygc] = new YYARec(-8, 26); yygc++;
+            yyg[yygc] = new YYARec(-2, 10); yygc++;
+            yyg[yygc] = new YYARec(-6, 12); yygc++;
+            yyg[yygc] = new YYARec(-7, 17); yygc++;
+            yyg[yygc] = new YYARec(-6, 19); yygc++;
+            yyg[yygc] = new YYARec(-8, 25); yygc++;
+            yyg[yygc] = new YYARec(-6, 26); yygc++;
+            yyg[yygc] = new YYARec(-7, 27); yygc++;
             yyg[yygc] = new YYARec(-7, 28); yygc++;
-            yyg[yygc] = new YYARec(-6, 22); yygc++;
-            yyg[yygc] = new YYARec(-8, 29); yygc++;
+            yyg[yygc] = new YYARec(-8, 32); yygc++;
+            yyg[yygc] = new YYARec(-6, 26); yygc++;
 
             yyd = new int[yynstates];
             yyd[0] = 0;
@@ -513,101 +517,101 @@ namespace Hackathon.Interpreter
             yyd[5] = 0;
             yyd[6] = 0;
             yyd[7] = 0;
-            yyd[8] = -2;
-            yyd[9] = -4;
-            yyd[10] = -1;
-            yyd[11] = 0;
+            yyd[8] = 0;
+            yyd[9] = -2;
+            yyd[10] = -5;
+            yyd[11] = -1;
             yyd[12] = 0;
             yyd[13] = 0;
             yyd[14] = 0;
             yyd[15] = 0;
             yyd[16] = 0;
-            yyd[17] = 0;
+            yyd[17] = -4;
             yyd[18] = 0;
-            yyd[19] = -12;
-            yyd[20] = -13;
+            yyd[19] = 0;
+            yyd[20] = 0;
             yyd[21] = 0;
-            yyd[22] = 0;
-            yyd[23] = 0;
-            yyd[24] = -10;
+            yyd[22] = -12;
+            yyd[23] = -13;
+            yyd[24] = 0;
             yyd[25] = 0;
-            yyd[26] = -11;
-            yyd[27] = -9;
-            yyd[28] = -6;
-            yyd[29] = -8;
-            yyd[30] = 0;
-            yyd[31] = -14;
-            yyd[32] = -15;
+            yyd[26] = 0;
+            yyd[27] = -10;
+            yyd[28] = -11;
+            yyd[29] = -14;
+            yyd[30] = -15;
+            yyd[31] = -9;
+            yyd[32] = -7;
 
             yyal = new int[yynstates];
             yyal[0] = 1;
-            yyal[1] = 4;
-            yyal[2] = 4;
-            yyal[3] = 8;
-            yyal[4] = 12;
-            yyal[5] = 13;
-            yyal[6] = 15;
-            yyal[7] = 17;
-            yyal[8] = 19;
-            yyal[9] = 19;
-            yyal[10] = 19;
-            yyal[11] = 19;
-            yyal[12] = 21;
-            yyal[13] = 22;
-            yyal[14] = 23;
-            yyal[15] = 24;
-            yyal[16] = 25;
-            yyal[17] = 29;
-            yyal[18] = 36;
-            yyal[19] = 43;
-            yyal[20] = 43;
-            yyal[21] = 43;
-            yyal[22] = 44;
-            yyal[23] = 48;
-            yyal[24] = 50;
-            yyal[25] = 50;
-            yyal[26] = 51;
-            yyal[27] = 51;
-            yyal[28] = 51;
-            yyal[29] = 51;
-            yyal[30] = 51;
-            yyal[31] = 53;
-            yyal[32] = 53;
+            yyal[1] = 5;
+            yyal[2] = 5;
+            yyal[3] = 10;
+            yyal[4] = 15;
+            yyal[5] = 16;
+            yyal[6] = 18;
+            yyal[7] = 20;
+            yyal[8] = 22;
+            yyal[9] = 28;
+            yyal[10] = 28;
+            yyal[11] = 28;
+            yyal[12] = 28;
+            yyal[13] = 30;
+            yyal[14] = 31;
+            yyal[15] = 32;
+            yyal[16] = 33;
+            yyal[17] = 34;
+            yyal[18] = 34;
+            yyal[19] = 35;
+            yyal[20] = 38;
+            yyal[21] = 45;
+            yyal[22] = 52;
+            yyal[23] = 52;
+            yyal[24] = 52;
+            yyal[25] = 54;
+            yyal[26] = 55;
+            yyal[27] = 58;
+            yyal[28] = 58;
+            yyal[29] = 58;
+            yyal[30] = 58;
+            yyal[31] = 58;
+            yyal[32] = 58;
 
             yyah = new int[yynstates];
-            yyah[0] = 3;
-            yyah[1] = 3;
-            yyah[2] = 7;
-            yyah[3] = 11;
-            yyah[4] = 12;
-            yyah[5] = 14;
-            yyah[6] = 16;
-            yyah[7] = 18;
-            yyah[8] = 18;
-            yyah[9] = 18;
-            yyah[10] = 18;
-            yyah[11] = 20;
-            yyah[12] = 21;
-            yyah[13] = 22;
-            yyah[14] = 23;
-            yyah[15] = 24;
-            yyah[16] = 28;
-            yyah[17] = 35;
-            yyah[18] = 42;
-            yyah[19] = 42;
-            yyah[20] = 42;
-            yyah[21] = 43;
-            yyah[22] = 47;
-            yyah[23] = 49;
-            yyah[24] = 49;
-            yyah[25] = 50;
-            yyah[26] = 50;
-            yyah[27] = 50;
-            yyah[28] = 50;
-            yyah[29] = 50;
-            yyah[30] = 52;
-            yyah[31] = 52;
-            yyah[32] = 52;
+            yyah[0] = 4;
+            yyah[1] = 4;
+            yyah[2] = 9;
+            yyah[3] = 14;
+            yyah[4] = 15;
+            yyah[5] = 17;
+            yyah[6] = 19;
+            yyah[7] = 21;
+            yyah[8] = 27;
+            yyah[9] = 27;
+            yyah[10] = 27;
+            yyah[11] = 27;
+            yyah[12] = 29;
+            yyah[13] = 30;
+            yyah[14] = 31;
+            yyah[15] = 32;
+            yyah[16] = 33;
+            yyah[17] = 33;
+            yyah[18] = 34;
+            yyah[19] = 37;
+            yyah[20] = 44;
+            yyah[21] = 51;
+            yyah[22] = 51;
+            yyah[23] = 51;
+            yyah[24] = 53;
+            yyah[25] = 54;
+            yyah[26] = 57;
+            yyah[27] = 57;
+            yyah[28] = 57;
+            yyah[29] = 57;
+            yyah[30] = 57;
+            yyah[31] = 57;
+            yyah[32] = 57;
 
             yygl = new int[yynstates];
             yygl[0] = 1;
@@ -619,24 +623,24 @@ namespace Hackathon.Interpreter
             yygl[6] = 16;
             yygl[7] = 16;
             yygl[8] = 16;
-            yygl[9] = 16;
-            yygl[10] = 16;
-            yygl[11] = 16;
+            yygl[9] = 17;
+            yygl[10] = 17;
+            yygl[11] = 17;
             yygl[12] = 17;
-            yygl[13] = 17;
-            yygl[14] = 17;
-            yygl[15] = 17;
-            yygl[16] = 17;
-            yygl[17] = 19;
-            yygl[18] = 20;
-            yygl[19] = 21;
-            yygl[20] = 21;
+            yygl[13] = 18;
+            yygl[14] = 18;
+            yygl[15] = 18;
+            yygl[16] = 18;
+            yygl[17] = 18;
+            yygl[18] = 18;
+            yygl[19] = 18;
+            yygl[20] = 20;
             yygl[21] = 21;
-            yygl[22] = 21;
-            yygl[23] = 23;
-            yygl[24] = 24;
-            yygl[25] = 24;
-            yygl[26] = 24;
+            yygl[22] = 22;
+            yygl[23] = 22;
+            yygl[24] = 22;
+            yygl[25] = 22;
+            yygl[26] = 22;
             yygl[27] = 24;
             yygl[28] = 24;
             yygl[29] = 24;
@@ -653,24 +657,24 @@ namespace Hackathon.Interpreter
             yygh[5] = 15;
             yygh[6] = 15;
             yygh[7] = 15;
-            yygh[8] = 15;
-            yygh[9] = 15;
-            yygh[10] = 15;
+            yygh[8] = 16;
+            yygh[9] = 16;
+            yygh[10] = 16;
             yygh[11] = 16;
-            yygh[12] = 16;
-            yygh[13] = 16;
-            yygh[14] = 16;
-            yygh[15] = 16;
-            yygh[16] = 18;
-            yygh[17] = 19;
-            yygh[18] = 20;
-            yygh[19] = 20;
+            yygh[12] = 17;
+            yygh[13] = 17;
+            yygh[14] = 17;
+            yygh[15] = 17;
+            yygh[16] = 17;
+            yygh[17] = 17;
+            yygh[18] = 17;
+            yygh[19] = 19;
             yygh[20] = 20;
-            yygh[21] = 20;
-            yygh[22] = 22;
-            yygh[23] = 23;
-            yygh[24] = 23;
-            yygh[25] = 23;
+            yygh[21] = 21;
+            yygh[22] = 21;
+            yygh[23] = 21;
+            yygh[24] = 21;
+            yygh[25] = 21;
             yygh[26] = 23;
             yygh[27] = 23;
             yygh[28] = 23;
@@ -682,19 +686,19 @@ namespace Hackathon.Interpreter
             yyr[yyrc] = new YYRRec(2, -2); yyrc++;
             yyr[yyrc] = new YYRRec(2, -2); yyrc++;
             yyr[yyrc] = new YYRRec(1, -5); yyrc++;
+            yyr[yyrc] = new YYRRec(2, -5); yyrc++;
             yyr[yyrc] = new YYRRec(1, -4); yyrc++;
             yyr[yyrc] = new YYRRec(0, -4); yyrc++;
-            yyr[yyrc] = new YYRRec(2, -7); yyrc++;
-            yyr[yyrc] = new YYRRec(0, -7); yyrc++;
-            yyr[yyrc] = new YYRRec(2, -7); yyrc++;
+            yyr[yyrc] = new YYRRec(2, -8); yyrc++;
+            yyr[yyrc] = new YYRRec(0, -8); yyrc++;
             yyr[yyrc] = new YYRRec(5, -3); yyrc++;
             yyr[yyrc] = new YYRRec(4, -6); yyrc++;
             yyr[yyrc] = new YYRRec(4, -6); yyrc++;
             yyr[yyrc] = new YYRRec(3, -6); yyrc++;
             yyr[yyrc] = new YYRRec(3, -6); yyrc++;
-            yyr[yyrc] = new YYRRec(3, -8); yyrc++;
-            yyr[yyrc] = new YYRRec(3, -8); yyrc++;
-            yyr[yyrc] = new YYRRec(0, -8); yyrc++;
+            yyr[yyrc] = new YYRRec(3, -7); yyrc++;
+            yyr[yyrc] = new YYRRec(3, -7); yyrc++;
+            yyr[yyrc] = new YYRRec(0, -7); yyrc++;
         }
 
         public bool yyact(int state, int sym, ref int act)

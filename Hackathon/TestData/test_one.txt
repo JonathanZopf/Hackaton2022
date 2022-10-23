@@ -51,7 +51,7 @@ set IX_SLD_LightBarrierInlet_I2 true
 set IX_SSC_LightBarrierStorage_I3 true
 )
 
-wait for 500 ms
+wait for 50 cycles
 assert QX_VGR_M3_RotateCounterclockwise_Q6 true 
 assert QX_VGR_M3_RotateClockwise_Q5 true
 assert QX_VGR_M1_VerticalAxisDown_Q2 true
